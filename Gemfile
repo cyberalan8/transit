@@ -1,10 +1,18 @@
 source 'https://rubygems.org'
 
+# rails framework
 gem 'rails', '3.2.6'
 
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
+# frontend
+gem 'haml'
+gem 'haml-rails'
+gem 'sass'
 
+
+# utility
+gem 'nokogiri'
+
+# database
 gem 'mysql2'
 
 
