@@ -79,6 +79,10 @@ module BusTrackerParser
     vehicle
   end
 
+  def BusTrackerParser.time_until_arrival(time)
+    ((time - BusTrackerParser.cta_time ) / 60).round
+  end
+
   private
 
   def BusTrackerParser.api_key
@@ -87,9 +91,5 @@ module BusTrackerParser
 
   def BusTrackerParser.variable_spacer(variable)
     variable.gsub(' ', '%20')
-  end
-
-  def BusTrackerParser.time_until_arrivial(time)
-    puts "#{((time - BusTrackerParser.cta_time ) / 60).round} minutes away"
   end
 end
