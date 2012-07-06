@@ -1,0 +1,5 @@
+%h2 Pick a bus route
+= select_tag 'routes', options_from_collection_for_select(@routes, "number", "name"), :prompt => "Select One"
+
+%h2 Pick a direction
+= select_tag 'directions'
