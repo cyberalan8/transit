@@ -13,8 +13,6 @@ module BusTrackerParser
 
     routes_dump.xpath("//route").each do |route|
       routes.merge!("#{route.children.children.first.text}" => "#{route.children.children.last.text}")
-      # TO DO:
-      # write to db
     end
 
     routes

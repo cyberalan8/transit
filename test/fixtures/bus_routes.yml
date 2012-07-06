@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  route_number: MyString
+  route_name: MyString
+  route_directions: MyString
+
+two:
+  route_number: MyString
+  route_name: MyString
+  route_directions: MyString
