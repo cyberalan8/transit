@@ -1,6 +1,8 @@
 Transit::Application.routes.draw do
   get "home/index"
 
+  resources :bus_tracker, :only => [:index]
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
