@@ -45,8 +45,8 @@ namespace :db do
         stops = BusTrackerParser.get_stops(rt, direction)
         stops.each_with_index do |stop, index|
           stp = stop.last
-          BusStop.create(:id => stp['id'], :name => stp['name'], :lat => stp['lat'], :lon => stp['lon'], :route => rt, :direction => direction)
-          print '.' if index % 500 == 0
+          BusStop.create(:stop_id => stp['stop_id'], :name => stp['name'], :lat => stp['lat'], :lon => stp['lon'], :route => rt, :direction => direction)
+          print '.' if index % 750 == 0
         end
       end
     end

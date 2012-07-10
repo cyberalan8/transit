@@ -34,9 +34,9 @@ module BusTrackerParser
     stops_dump = Nokogiri::XML(open("http://www.ctabustracker.com/bustime/api/v1/getstops?key=" + api_key + "&rt=" + route + "&dir=" + variable_spacer(direction) ))
 
     stops_dump.xpath("//stop").each do |stop|
-      temp = {'id' => stop.children.children[0].text, 
-        'name' => stop.children.children[1].text, 
-        'lat' => stop.children.children[2].text, 
+      temp = {'stop_id' => stop.children.children[0].text,
+        'name' => stop.children.children[1].text,
+        'lat' => stop.children.children[2].text,
         'lon' => stop.children.children[3].text}
 
       stops.merge!("#{stop.children.children.first.text}" => temp)
@@ -48,11 +48,11 @@ module BusTrackerParser
   def BusTrackerParser.get_predictions(route, stop_id)
     predictions = {}
     predictions_dump = Nokogiri::XML(open("http://www.ctabustracker.com/bustime/api/v1/getpredictions?key=" + api_key + "&rt=" + route + "&stpid=" + stop_id))
-    
+
     predictions_dump.xpath("//prd").each_with_index do |prediction, index|
-      temp = {'vehicle_id' => prediction.children.children[4].text, 
-        'distance' => prediction.children.children[5].text, 
-        'destination' => prediction.children.children[8].text, 
+      temp = {'vehicle_id' => prediction.children.children[4].text,
+        'distance' => prediction.children.children[5].text,
+        'destination' => prediction.children.children[8].text,
         'predicted_time' => Time.parse(prediction.children.children[9].text)}
 
       predictions.merge!(index => temp)
@@ -66,9 +66,9 @@ module BusTrackerParser
     vehicle_dump = Nokogiri::XML(open("http://www.ctabustracker.com/bustime/api/v1/getvehicles?key=" + api_key + "&vid=" + vehicle_id))
 
     vehicle_dump.xpath("//vehicle").each do |prediction|
-      temp = {'vehicle_id' => prediction.children.children[0].text, 
-        'lat' => prediction.children.children[2].text, 
-        'lon' => prediction.children.children[3].text, 
+      temp = {'vehicle_id' => prediction.children.children[0].text,
+        'lat' => prediction.children.children[2].text,
+        'lon' => prediction.children.children[3].text,
         'destination' => prediction.children.children[7].text}
 
       vehicle.merge!(prediction.children.children[0].text => temp)
