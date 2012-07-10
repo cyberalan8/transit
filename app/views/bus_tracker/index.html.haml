@@ -1,5 +1,12 @@
 %h2 Pick a bus route
-= select_tag 'routes', options_from_collection_for_select(@routes, "number", "name"), :prompt => "Select One"
+=select("route", "number", BusRoute.all.collect {|b| [ format_bus_routes(b), b.number ] }, {:include_blank => 'Select One'})
 
-%h2 Pick a direction
-= select_tag 'directions'
+.directions
+  %h2 Pick a direction
+  = select_tag 'direction'
+
+.stops
+  %h2 Pick a stop
+  = select_tag 'stop'
+
+.output

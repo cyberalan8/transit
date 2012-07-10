@@ -2,6 +2,9 @@ Transit::Application.routes.draw do
   get "home/index"
 
   resources :bus_tracker, :only => [:index]
+  match 'bus_tracker/route/:number/get_directions' => 'bus_tracker#get_directions'
+  match 'bus_tracker/route/:number/direction/:direction/get_stops' => 'bus_tracker#get_stops'
+  match 'bus_tracker/route/:number/stop_id/:stop_id/get_predictions' => 'bus_tracker#get_predictions'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
