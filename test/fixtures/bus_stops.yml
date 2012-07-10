@@ -7,3 +7,4 @@ one:
   lon: 16.2
   route: 99
   direction: North Bound
+  stop_id: 12345
