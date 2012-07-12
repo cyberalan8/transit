@@ -8,13 +8,11 @@ gem 'haml'
 gem 'haml-rails'
 gem 'sass'
 
-
 # utility
 gem 'nokogiri'
 
 # database
 gem 'mysql2'
-
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -30,6 +28,10 @@ end
 
 gem 'jquery-rails'
 
+group :production do
+  gem 'pg', '0.11'
+  gem 'activerecord-postgresql-adapter'
+end
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
