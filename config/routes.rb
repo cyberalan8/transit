@@ -5,6 +5,7 @@ Transit::Application.routes.draw do
   match 'bus_tracker/route/:number/get_directions' => 'bus_tracker#get_directions'
   match 'bus_tracker/route/:number/direction/:direction/get_stops' => 'bus_tracker#get_stops'
   match 'bus_tracker/route/:number/stop_id/:stop_id/get_predictions' => 'bus_tracker#get_predictions'
+  match 'bus_tracker/get_cta_time' => 'bus_tracker#get_cta_time'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

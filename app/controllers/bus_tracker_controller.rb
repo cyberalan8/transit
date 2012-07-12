@@ -41,4 +41,12 @@ class BusTrackerController < ApplicationController
       format.json  { render :json =>  @predictions }
     end
   end
+
+  def get_cta_time
+    @cta_time = BusTrackerParser.cta_time
+
+    respond_to do |format|
+      format.json { render :json => @cta_time }
+    end
+  end
 end

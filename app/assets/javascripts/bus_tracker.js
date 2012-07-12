@@ -1,6 +1,8 @@
 $(document).ready(function() {
   BusTracker.setDirections();
   BusTracker.setStops();
+
+  setInterval(BusTracker.displayPredictions, 30000);
 });
 
 BusTracker = {
@@ -14,8 +16,7 @@ BusTracker = {
         BusTracker.hideDiv('.directions');
         BusTracker.hideDiv('.stops');
         BusTracker.clearSelectTagFor("#direction");
-        BusTracker.populateSelectTag("#directions", null, 'Go Back and Pick a Route'); //is this needed? i don't think so
-        BusTracker.hideDiv('.stops');
+        BusTracker.hideDiv('.output');
       }
     });
   },
@@ -28,6 +29,8 @@ BusTracker = {
       dataType: "json",
       success: function(data) {
         var directions = data.directions.split(',');
+        BusTracker.hideDiv('.output');
+        BusTracker.hideDiv('.stops');
         BusTracker.clearSelectTagFor('#direction');
         BusTracker.populateSelectTag('#direction', null, 'Select One');
         $.each(directions, function(index, option){
@@ -54,14 +57,15 @@ BusTracker = {
     $('#direction').change(function(){
       var direction = $('#direction').val();
       var route_number = $('#route_number').val();
+
       if (direction) {
+        $('.output').html('');
         BusTracker.getStops(route_number, direction);
         BusTracker.showDiv('.stops');
       } else {
-        $('.output').html('');
+        BusTracker.hideDiv('.output');
         BusTracker.hideDiv('.stops');
         BusTracker.clearSelectTagFor('#stop');
-        BusTracker.populateSelectTag('#stop', null, 'Go Back and Pick a Direction'); //is this needed? i don't think so
       }
     });
   },
@@ -80,32 +84,74 @@ BusTracker = {
       }
     });
     $('#stop').change(function(){
-      var stop_id = $('#stop').val();
-      BusTracker.displayPredictions(route_number, stop_id);
+      BusTracker.displayPredictions();
     });
   },
-  displayPredictions: function(route_number, stop_id) {
-    $('.output').html('');
-    BusTracker.showDiv('.output');
-    BusTracker.getPredictions(route_number, stop_id);
-    $('.output').append(
-      $(document.createElement("h2")).text("- - - CTA Bus - - -")
-    );
+  displayPredictions: function() {
+    var route_number = $('#route_number').val();
+    var stop_id = $('#stop').val();
+
+    if (route_number && stop_id) {
+      $('.output').html('');
+      BusTracker.showDiv('.output');
+      $('.output').append(
+        $(document.createElement("h2")).text("- - - CTA Bus Status - - -")
+      );
+      BusTracker.getPredictions(route_number, stop_id);
+    }
   },
   getPredictions: function(route_number, stop_id){
-    var url = "bus_tracker/route/" + route_number + "/stop_id/" + stop_id + "/get_predictions";
-    $.ajax({
+    if (route_number && stop_id) {
+      var url = "bus_tracker/route/" + route_number + "/stop_id/" + stop_id + "/get_predictions";
+      var ctaTime = BusTracker.ctaTime();
+
+      $.ajax({
+        type: 'GET',
+        url: url,
+        dataType: "json",
+        success: function(data) {
+          if ( data[0] ) {
+            $.each(data, function(index, option){
+              var timeRemaining = BusTracker.calculateTimeRemaining(Date.parse(ctaTime), Date.parse(option.predicted_time));
+              var prediction = {route: route_number, destination: option.destination,
+                vehicle_id: option.vehicle_id,
+                time_remaining: timeRemaining};
+
+               var template = BusTracker.getTemplate(timeRemaining);
+               var html = Mustache.to_html(template, prediction);
+
+               BusTracker.showDiv('.output')
+               $('.output').append(html);
+            });
+          } else {
+            $('.output').html('');
+            $('.output').append("<h3>Sorry, no bus are coming... </h3>");
+          }
+        }
+      });
+    }
+  },
+  getTemplate: function(time){
+    var template = '';
+    if ( time > 1 ) {
+      template = "<h3>#{{route}} to {{destination}}<br>{{time_remaining}} Minutes away<br>Bus #{{vehicle_id}}</h3>";
+    } else if ( time > 0 ){
+      template = "<h3>#{{route}} to {{destination}} is Due<br>Bus #{{vehicle_id}}</h3>";
+    }
+    return template += "<h2>- - - - - - - - - - - - - - - - - - -</h2>";
+  },
+  ctaTime: function() {
+    var url = "bus_tracker/get_cta_time";
+
+    var ctaTime = $.ajax({
       type: 'GET',
       url: url,
-      dataType: "json",
-      success: function(data) {
-        $.each(data, function(index, option){
-          //call template here to display each prediction(s)
-        });
-      },
-      error: function(){
-        // TO DO: display to user that there was en error
-      }
-    });
+      async: false
+    }).responseText;
+
+    return Date(ctaTime);
+  },
+  calculateTimeRemaining: function (ctaTime, predictedTime){
+    return Math.round((predictedTime - ctaTime) / 60 / 1000 );
   }
 };
