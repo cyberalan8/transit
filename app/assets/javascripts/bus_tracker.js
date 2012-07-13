@@ -92,11 +92,7 @@ BusTracker = {
     var stop_id = $('#stop').val();
 
     if (route_number && stop_id) {
-      $('.output').html('');
       BusTracker.showDiv('.output');
-      $('.output').append(
-        $(document.createElement("h2")).text("- - - CTA Bus Status - - -")
-      );
       BusTracker.getPredictions(route_number, stop_id);
     }
   },
@@ -109,10 +105,13 @@ BusTracker = {
         url: url,
         dataType: "json",
         success: function(data) {
+          $('.output').html('');
           if ( data[0] ) {
+            $('.output').append(
+              $(document.createElement("h2")).text("- - - CTA Bus Status - - -")
+            );
             $.each(data, function(index, option){
               var timeRemaining = BusTracker.timeUntilArrival(option.predicted_time);
-
               var prediction = {route: route_number, destination: option.destination,
                 vehicle_id: option.vehicle_id,
                 time_remaining: timeRemaining};
@@ -124,9 +123,9 @@ BusTracker = {
                $('.output').append(html);
             });
           } else {
-            $('.output').html('');
-            $('.output').append("<h3>Sorry, no bus are coming... </h3>");
+            $('.output').append("<h3>Sorry, there are no buses are coming...</h3>");
           }
+          $('.output').append("<h4>This page will refresh every 30 seconds.</h4>");
         }
       });
     }
@@ -134,8 +133,8 @@ BusTracker = {
   getTemplate: function(time){
     var template = '';
     if ( time > 1 ) {
-      template = "<h3>#{{route}} to {{destination}}<br>{{time_remaining}} Minutes away<br>Bus #{{vehicle_id}}</h3>";
-    } else if ( time > 0 ){
+      template = "<h3>#{{route}} to {{destination}}<br>{{time_remaining}} minutes away<br>Bus #{{vehicle_id}}</h3>";
+    } else if ( time <= 1 ){
       template = "<h3>#{{route}} to {{destination}} is Due<br>Bus #{{vehicle_id}}</h3>";
     }
     return template += "<h2>- - - - - - - - - - - - - - - - - - -</h2>";
