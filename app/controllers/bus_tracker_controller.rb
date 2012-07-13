@@ -6,7 +6,7 @@ class BusTrackerController < ApplicationController
 
     respond_to do |format|
       format.html  # index.html.erb
-      format.json  { render :json => @routes }
+      format.json { render :json => @routes }
     end
   end
 
@@ -14,7 +14,7 @@ class BusTrackerController < ApplicationController
     @route = BusRoute.find_by_number(params[:number])
 
     respond_to do |format|
-      format.json  { render :json => @route }
+      format.json { render :json => @route }
     end
   end
 
@@ -26,19 +26,20 @@ class BusTrackerController < ApplicationController
     @bus_stops.sort! { |a,b| a.name <=> b.name }
 
     respond_to do |format|
-      format.json  { render :json => @bus_stops }
+      format.json { render :json => @bus_stops }
     end
   end
 
   def get_predictions
 
-    route_number = params[:number]
+    @route_number = params[:number]
     stop_id = params[:stop_id]
 
-    @predictions = BusTrackerParser.get_predictions(route_number, stop_id)
+    @predictions = BusTrackerParser.get_predictions(@route_number, stop_id)
 
     respond_to do |format|
-      format.json  { render :json =>  @predictions }
+      format.html
+      format.json { render :json =>  @predictions }
     end
   end
 
