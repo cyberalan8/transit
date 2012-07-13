@@ -103,7 +103,6 @@ BusTracker = {
   getPredictions: function(route_number, stop_id){
     if (route_number && stop_id) {
       var url = "bus_tracker/route/" + route_number + "/stop_id/" + stop_id + "/get_predictions";
-      var ctaTime = BusTracker.ctaTime();
 
       $.ajax({
         type: 'GET',
@@ -112,7 +111,8 @@ BusTracker = {
         success: function(data) {
           if ( data[0] ) {
             $.each(data, function(index, option){
-              var timeRemaining = BusTracker.calculateTimeRemaining(Date.parse(ctaTime), Date.parse(option.predicted_time));
+              var timeRemaining = BusTracker.timeUntilArrival(option.predicted_time);
+
               var prediction = {route: route_number, destination: option.destination,
                 vehicle_id: option.vehicle_id,
                 time_remaining: timeRemaining};
@@ -140,18 +140,15 @@ BusTracker = {
     }
     return template += "<h2>- - - - - - - - - - - - - - - - - - -</h2>";
   },
-  ctaTime: function() {
-    var url = "bus_tracker/get_cta_time";
+  timeUntilArrival: function(time) {
+    var url = "bus_tracker/time_until_arrival/" + time;
 
-    var ctaTime = $.ajax({
+    var timeUntilArrival = $.ajax({
       type: 'GET',
       url: url,
       async: false
     }).responseText;
 
-    return Date(ctaTime);
-  },
-  calculateTimeRemaining: function (ctaTime, predictedTime){
-    return Math.round((predictedTime - ctaTime) / 60 / 1000 );
+    return timeUntilArrival;
   }
 };

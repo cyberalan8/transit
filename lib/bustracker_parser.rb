@@ -53,7 +53,7 @@ module BusTrackerParser
       temp = {'vehicle_id' => prediction.children.children[4].text,
         'distance' => prediction.children.children[5].text,
         'destination' => prediction.children.children[8].text,
-        'predicted_time' => Time.parse(prediction.children.children[9].text)}
+        'predicted_time' => prediction.children.children[9].text}
 
       predictions.merge!(index => temp)
     end

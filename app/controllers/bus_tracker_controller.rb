@@ -42,11 +42,13 @@ class BusTrackerController < ApplicationController
     end
   end
 
-  def get_cta_time
-    @cta_time = BusTrackerParser.cta_time
+  def time_until_arrival
+    time = params[:time]
+
+    @time_until_arrival = BusTrackerParser.time_until_arrival(Time.parse(time))
 
     respond_to do |format|
-      format.json { render :json => @cta_time }
+      format.json { render :json => @time_until_arrival }
     end
   end
 end
