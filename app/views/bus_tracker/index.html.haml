@@ -1,7 +1,7 @@
 = javascript_include_tag 'mustache'
 %h2 Pick a bus route
 
-=select("route", "number", BusRoute.all.collect {|b| [ format_bus_routes(b), b.number ] }, {:include_blank => 'Select One'})
+= select("route", "number", BusRoute.all.collect {|b| [ format_bus_routes(b), b.number ] }, {:include_blank => 'Select One'})
 
 .directions
   %h2 Pick a direction
@@ -12,3 +12,4 @@
   = select_tag 'stop'
 
 .output
+  =link_to('Find My Bus!', '#')

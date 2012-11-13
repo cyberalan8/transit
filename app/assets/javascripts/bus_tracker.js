@@ -1,22 +1,24 @@
 $(document).ready(function() {
+  BusTracker.initialize();
   BusTracker.setDirections();
   BusTracker.setStops();
-
-  setInterval(BusTracker.displayPredictions, 30000);
 });
 
 BusTracker = {
+  initialize: function() {
+    BusTracker.populateSelectTag('#direction', null, 'Select One');
+    BusTracker.disableSelectTag("#direction");
+    BusTracker.populateSelectTag('#stop', null, 'Select One');
+    BusTracker.disableSelectTag("#stop");
+  },
   setDirections: function() {
     $('#route_number').change(function(){
       var route_number = $('#route_number').val();
       if (route_number) {
         BusTracker.getDirections(route_number);
-        BusTracker.showDiv('.directions');
       } else {
-        BusTracker.hideDiv('.directions');
-        BusTracker.hideDiv('.stops');
+        BusTracker.initialize();
         BusTracker.clearSelectTagFor("#direction");
-        BusTracker.hideDiv('.output');
       }
     });
   },
@@ -29,8 +31,6 @@ BusTracker = {
       dataType: "json",
       success: function(data) {
         var directions = data.directions.split(',');
-        BusTracker.hideDiv('.output');
-        BusTracker.hideDiv('.stops');
         BusTracker.clearSelectTagFor('#direction');
         BusTracker.populateSelectTag('#direction', null, 'Select One');
         $.each(directions, function(index, option){
@@ -38,6 +38,9 @@ BusTracker = {
         });
       }
     });
+  },
+  showDiv: function(divId) {
+    $(divId).show();
   },
   clearSelectTagFor: function(select_tag) {
     $(select_tag).html("");
@@ -47,11 +50,8 @@ BusTracker = {
       $(document.createElement("option")).val(value).text(text)
     );
   },
-  showDiv: function(divId) {
-    $(divId).show();
-  },
-  hideDiv: function(divId) {
-    $(divId).hide();
+  disableSelectTag: function(divId) {
+    $(divId).attr('disabled', false);
   },
   setStops: function() {
     $('#direction').change(function(){
@@ -59,13 +59,9 @@ BusTracker = {
       var route_number = $('#route_number').val();
 
       if (direction) {
-        $('.output').html('');
         BusTracker.getStops(route_number, direction);
-        BusTracker.showDiv('.stops');
       } else {
-        BusTracker.hideDiv('.output');
-        BusTracker.hideDiv('.stops');
-        BusTracker.clearSelectTagFor('#stop');
+        BusTracker.initialize();
       }
     });
   },
@@ -92,62 +88,9 @@ BusTracker = {
     var stop_id = $('#stop').val();
 
     if (route_number && stop_id) {
-      BusTracker.showDiv('.output');
-      BusTracker.getPredictions(route_number, stop_id);
-    }
-  },
-  getPredictions: function(route_number, stop_id){
-    if (route_number && stop_id) {
+      $('.output').show();
       var url = "bus_tracker/route/" + route_number + "/stop_id/" + stop_id + "/get_predictions";
-
-      $.ajax({
-        type: 'GET',
-        url: url,
-        dataType: "json",
-        success: function(data) {
-          $('.output').html('');
-          if ( data[0] ) {
-            $('.output').append(
-              $(document.createElement("h2")).text("- - - CTA Bus Status - - -")
-            );
-            $.each(data, function(index, option){
-              var timeRemaining = BusTracker.timeUntilArrival(option.predicted_time);
-              var prediction = {route: route_number, destination: option.destination,
-                vehicle_id: option.vehicle_id,
-                time_remaining: timeRemaining};
-
-               var template = BusTracker.getTemplate(timeRemaining);
-               var html = Mustache.to_html(template, prediction);
-
-               BusTracker.showDiv('.output')
-               $('.output').append(html);
-            });
-          } else {
-            $('.output').append("<h3>Sorry, there are no buses are coming...</h3>");
-          }
-          $('.output').append("<h4>This page will refresh every 30 seconds.</h4>");
-        }
-      });
+      $('.output > a').attr("href", url)
     }
   },
-  getTemplate: function(time){
-    var template = '';
-    if ( time > 1 ) {
-      template = "<h3>#{{route}} to {{destination}}<br>{{time_remaining}} minutes away<br>Bus #{{vehicle_id}}</h3>";
-    } else if ( time <= 1 ){
-      template = "<h3>#{{route}} to {{destination}} is Due<br>Bus #{{vehicle_id}}</h3>";
-    }
-    return template += "<h2>- - - - - - - - - - - - - - - - - - -</h2>";
-  },
-  timeUntilArrival: function(time) {
-    var url = "bus_tracker/time_until_arrival/" + time;
-
-    var timeUntilArrival = $.ajax({
-      type: 'GET',
-      url: url,
-      async: false
-    }).responseText;
-
-    return timeUntilArrival;
-  }
 };
