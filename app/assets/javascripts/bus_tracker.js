@@ -2,14 +2,14 @@ $(document).ready(function() {
   BusTracker.initialize();
   BusTracker.setDirections();
   BusTracker.setStops();
+  BusTracker.predictionWatcher();
 });
 
 BusTracker = {
   initialize: function() {
     BusTracker.populateSelectTag('#direction', null, 'Select One');
-    BusTracker.disableSelectTag("#direction");
     BusTracker.populateSelectTag('#stop', null, 'Select One');
-    BusTracker.disableSelectTag("#stop");
+    BusTracker.disablePredictionLink();
   },
   setDirections: function() {
     $('#route_number').change(function(){
@@ -17,9 +17,10 @@ BusTracker = {
       if (route_number) {
         BusTracker.getDirections(route_number);
       } else {
-        BusTracker.initialize();
-        BusTracker.clearSelectTagFor("#direction");
+        BusTracker.resetDropdown('#direction');
       }
+      BusTracker.resetDropdown('#stop');
+      BusTracker.disablePredictionLink();
     });
   },
   getDirections: function(route_number) {
@@ -31,27 +32,12 @@ BusTracker = {
       dataType: "json",
       success: function(data) {
         var directions = data.directions.split(',');
-        BusTracker.clearSelectTagFor('#direction');
-        BusTracker.populateSelectTag('#direction', null, 'Select One');
+        BusTracker.resetDropdown('#direction');
         $.each(directions, function(index, option){
           BusTracker.populateSelectTag('#direction', option, option);
         });
       }
     });
-  },
-  showDiv: function(divId) {
-    $(divId).show();
-  },
-  clearSelectTagFor: function(select_tag) {
-    $(select_tag).html("");
-  },
-  populateSelectTag: function(selectTag, value, text){
-    $(selectTag).append(
-      $(document.createElement("option")).val(value).text(text)
-    );
-  },
-  disableSelectTag: function(divId) {
-    $(divId).attr('disabled', false);
   },
   setStops: function() {
     $('#direction').change(function(){
@@ -61,8 +47,9 @@ BusTracker = {
       if (direction) {
         BusTracker.getStops(route_number, direction);
       } else {
-        BusTracker.initialize();
+        BusTracker.resetDropdown('#stop');
       }
+      BusTracker.disablePredictionLink();
     });
   },
   getStops: function(route_number, direction) {
@@ -79,18 +66,44 @@ BusTracker = {
         });
       }
     });
+  },
+  predictionWatcher: function() {
     $('#stop').change(function(){
-      BusTracker.displayPredictions();
+      var stop = $('#stop').val();
+      if (stop) {
+        BusTracker.generatePredictionLink();
+      } else {
+        BusTracker.disablePredictionLink();
+      }
     });
   },
-  displayPredictions: function() {
+  clearSelectTagFor: function(select_tag) {
+    $(select_tag).html("");
+  },
+  populateSelectTag: function(selectTag, value, text){
+    $(selectTag).append(
+      $(document.createElement("option")).val(value).text(text)
+    );
+  },
+  generatePredictionLink: function() {
     var route_number = $('#route_number').val();
     var stop_id = $('#stop').val();
 
     if (route_number && stop_id) {
-      $('.output').show();
       var url = "bus_tracker/route/" + route_number + "/stop_id/" + stop_id + "/get_predictions";
-      $('.output > a').attr("href", url)
+      $('#find_my_bus').attr("href", url);
+      BusTracker.enablePredictionLink();
     }
   },
+  resetDropdown: function(selector) {
+    BusTracker.clearSelectTagFor(selector);
+    BusTracker.populateSelectTag(selector, null, 'Select One');
+  },
+  enablePredictionLink: function() {
+    $('#find_my_bus').removeClass('disabled');
+  },
+  disablePredictionLink: function() {
+    $('#find_my_bus').removeAttr("href");
+    $('#find_my_bus').addClass('disabled');
+  }
 };

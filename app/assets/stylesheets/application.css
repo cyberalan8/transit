@@ -11,3 +11,77 @@
  *= require_self
  *= require_tree .
  */
+body {
+  background: darkgrey;
+  text-align: center;
+  width: 500px;
+  margin: auto
+}
+
+a {
+  font-weight: bold;
+  text-decoration: none;
+}
+
+#container {
+  background: white;
+  border: 2px solid black;
+  border-radius: 8px;
+  margin: 30px;
+  padding: 20px;
+}
+
+.button {
+  background: lightgrey;
+  border-radius: 7px;
+  border: 2px solid black;
+  color: black;
+  cursor: pointer;
+  display: inline;
+  font-size: 14px;
+  font-weight: normal;
+  padding: 7px 16px;
+  text-decoration: none;
+  text-shadow: 0 1px 0px rgba(0, 0, 0, 0.2);
+}
+
+a.button:hover {
+  background: grey;
+  color: white;
+}
+
+.disabled, a.disabled:hover {
+  color: darkgray;
+  background: whitesmoke;
+  border: 2px solid darkgray;
+  cursor: default;
+}
+
+.paper {
+  background-color: #fff;
+  background-size: 100% 1.2em;
+  background-image: -webkit-linear-gradient(0deg, transparent 19px, #abced4 19px, #abced4 21px, transparent 21px),
+  -webkit-linear-gradient(#eee .05em, transparent .05em);
+  background-image: -moz-linear-gradient(0deg, transparent 19px, #abced4 19px, #abced4 21px, transparent 21px),
+  -moz-linear-gradient(#eee .05em, transparent .05em);
+  background-image: -ms-linear-gradient(0deg, transparent 19px, #abced4 19px, #abced4 21px, transparent 21px),
+  -ms-linear-gradient(#eee .05em, transparent .05em);
+  background-image: -o-linear-gradient(0deg, transparent 19px, #abced4 19px, #abced4 21px, transparent 21px),
+  -o-linear-gradient(#eee .05em, transparent .05em);
+  background-image: linear-gradient(0deg, transparent 19px, #abced4 19px, #abced4 21px, transparent 21px),
+  linear-gradient(#eee .05em, transparent .05em);
+  -pie-background: linear-gradient(0deg, transparent 19px, #abced4 19px, #abced4 21px, transparent 21px) 0 0 / 100% 1.2em,
+  linear-gradient(#eee .05em, transparent .05em) 0 0 / 100% 1.2em #fff;
+  behavior: url(/PIE.htc);
+  margin: -10px;
+}
+
+hr {
+    border: 0;
+    height: 0;
+    box-shadow: 0 0 5px 1px black;
+}
+
+hr:after {
+    content: "\00a0";  /* Prevent margin collapse */
+}

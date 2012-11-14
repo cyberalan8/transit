@@ -1,3 +1,22 @@
-.output {
-  display: none;
+span {
+  display: inline-block;
+  text-align: right;
+  width: 120px;
+}
+
+.find_my_bus {
+  margin: 20px 0 15px 0;
+}
+
+select {
+  width: 250px
+}
+
+.nav {
+  display: block;
+  text-align: left;
+}
+
+.route_number, .destination, .route_name {
+  display: inline;
 }
