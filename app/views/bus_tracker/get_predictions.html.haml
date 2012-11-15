@@ -1,26 +1,35 @@
-%meta{'http-equiv' => 'refresh', :content => '30'}
+%div{ :class => ('paper' unless  @predictions['error'])}
+  - refresh_timer = 30
+  %meta{'http-equiv' => 'refresh', :content => refresh_timer}
 
-- unless @predictions.empty?
-  %h2
-    ='- - - CTA Bus Status - - -'
-    %br
-    - @predictions.each do |prediction|
-      - prediction = prediction.last
-      - time_remaining = time_remaining(Time.parse(prediction['predicted_time']))
-      %h3
-        = "##{@route_number} to #{prediction['destination']}"
-        - if time_remaining > 1
-          %br
-          = "#{time_remaining} minutes away"
-        - elsif time_remaining <= 1
-          = "is due"
-        %br
-        = "Bus ##{prediction['vehicle_id']}"
+  - if @predictions['error']
+    = translate_error @predictions['error']
+
+  - unless @predictions['error']
+    - unless @predictions.empty?
       %h2
-        ='- - - - - - - - - - - - - - - - - - -'
-- else
-  %h3
-    Sorry, there are no buses are coming...
+        CTA Bus Status
+        %hr
+        - @predictions.each do |prediction|
+          - prediction = prediction.last
+          - time_remaining = time_remaining(Time.parse(prediction['predicted_time']))
+          .route_number
+            = @route.number
+          .destination
+            = prediction['destination']
+          %br
+          - if time_remaining > 1
+            = "#{time_remaining} minutes away"
+          - elsif time_remaining <= 1
+            = "is approaching"
+          %br
+          = "Bus ##{prediction['vehicle_id']}"
+          %hr
+    - else
+      %h3
+        Sorry, there are no buses are coming...
 
-%h4
-  This page will refresh every 30 seconds.
+  %h4
+    ="This page will refresh every #{refresh_timer} seconds."
+
+  = link_to('<< Back', bus_tracker_index_path, :class => 'nav')

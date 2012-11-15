@@ -47,15 +47,19 @@ module BusTrackerParser
 
   def BusTrackerParser.get_predictions(route, stop_id)
     predictions = {}
-    predictions_dump = Nokogiri::XML(open("http://www.ctabustracker.com/bustime/api/v1/getpredictions?key=" + api_key + "&rt=" + route + "&stpid=" + stop_id))
+    begin
+      predictions_dump = Nokogiri::XML(open("http://www.ctabustracker.com/bustime/api/v1/getpredictions?key=" + api_key + "&rt=" + route + "&stpid=" + stop_id))
 
-    predictions_dump.xpath("//prd").each_with_index do |prediction, index|
-      temp = {'vehicle_id' => prediction.children.children[4].text,
-        'distance' => prediction.children.children[5].text,
-        'destination' => prediction.children.children[8].text,
-        'predicted_time' => prediction.children.children[9].text}
+      predictions_dump.xpath("//prd").each_with_index do |prediction, index|
+        temp = {'vehicle_id' => prediction.children.children[4].text,
+          'distance' => prediction.children.children[5].text,
+          'destination' => prediction.children.children[8].text,
+          'predicted_time' => prediction.children.children[9].text}
 
-      predictions.merge!(index => temp)
+        predictions.merge!(index => temp)
+      end
+    rescue Exception => ex
+      predictions.merge!('error' => ex)
     end
 
     predictions

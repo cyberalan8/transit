@@ -32,10 +32,8 @@ class BusTrackerController < ApplicationController
 
   def get_predictions
 
-    @route_number = params[:number]
-    stop_id = params[:stop_id]
-
-    @predictions = BusTrackerParser.get_predictions(@route_number, stop_id)
+    @route = BusRoute.find_by_number(params[:number])
+    @predictions = BusTrackerParser.get_predictions(@route.number, params[:stop_id])
 
     respond_to do |format|
       format.html

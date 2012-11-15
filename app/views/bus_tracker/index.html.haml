@@ -14,4 +14,7 @@
   = select_tag 'stop'
 
 .find_my_bus
-  =link_to('Find My Bus!', '', :id => 'find_my_bus', :class => 'disabled button')
+  = link_to('Find My Bus!', '', :id => 'find_my_bus', :class => 'disabled button')
+
+.nav
+  = link_to('<< Back', home_index_path)
