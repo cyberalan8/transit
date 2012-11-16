@@ -15,8 +15,10 @@
           - time_remaining = time_remaining(Time.parse(prediction['predicted_time']))
           .route_number
             = @route.number
-          .destination
-            = prediction['destination']
+          .route_name.visible
+            = @route.name
+          .destination.hidden
+            = "to #{prediction['destination']}"
           %br
           - if time_remaining > 1
             = "#{time_remaining} minutes away"

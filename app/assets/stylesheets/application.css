@@ -85,3 +85,7 @@ hr {
 hr:after {
     content: "\00a0";  /* Prevent margin collapse */
 }
+
+.hidden {
+  display: none !important;
+}

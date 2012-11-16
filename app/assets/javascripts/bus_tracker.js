@@ -3,6 +3,7 @@ $(document).ready(function() {
   BusTracker.setDirections();
   BusTracker.setStops();
   BusTracker.predictionWatcher();
+  BusTracker.rotate();
 });
 
 BusTracker = {
@@ -105,5 +106,27 @@ BusTracker = {
   disablePredictionLink: function() {
     $('#find_my_bus').removeAttr("href");
     $('#find_my_bus').addClass('disabled');
+  },
+  rotate: function() {
+    var $name = $('.route_name');
+    var $destination = $('.destination');
+
+    setInterval(function() {
+      if ($name.hasClass('visible') === true) {
+        BusTracker.makeInvisble($name);
+        BusTracker.makeVisible($destination);
+      } else {
+        BusTracker.makeInvisble($destination);
+        BusTracker.makeVisible($name);
+      }
+    }, 6000);
+  },
+  makeInvisble: function(div) {
+    div.removeClass('visible')
+    div.addClass('hidden');
+  },
+  makeVisible: function(div) {
+    div.removeClass('hidden');
+    div.addClass('visible');
   }
 };
